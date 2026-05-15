@@ -1,0 +1,83 @@
+"use client";
+
+import { useState } from "react";
+import type { ExamBossState } from "@/lib/types";
+
+interface MissionScreenProps {
+  isChecking: boolean;
+  state: ExamBossState;
+  onBack: () => void;
+  onSubmitAnswer: (answer: string) => void;
+}
+
+export function MissionScreen({ isChecking, state, onBack, onSubmitAnswer }: MissionScreenProps) {
+  const [answer, setAnswer] = useState("A z-score shows how far a value is from the mean.");
+  const currentBoss = state.topicBosses.find((boss) => boss.id === state.currentMission.topicId);
+
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (!answer.trim()) {
+      return;
+    }
+
+    onSubmitAnswer(answer);
+  }
+
+  return (
+    <section className="mx-auto min-h-screen w-full max-w-4xl px-6 py-10">
+      <button
+        className="mb-6 text-sm font-semibold text-slate-600 transition hover:text-slate-950"
+        onClick={onBack}
+        type="button"
+      >
+        Back to Dashboard
+      </button>
+
+      <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-soft md:p-8">
+        <div className="border-b border-slate-200 pb-6">
+          <p className="text-sm font-bold uppercase text-slate-500">Mission</p>
+          <h1 className="mt-2 text-3xl font-black text-slate-950">{state.currentMission.title}</h1>
+          <p className="mt-2 text-base font-semibold text-slate-600">
+            Topic: {currentBoss?.name ?? state.currentMission.topicId}
+          </p>
+        </div>
+
+        <div className="mt-6 grid gap-5">
+          <div className="rounded-lg bg-slate-50 p-5">
+            <p className="text-sm font-bold uppercase text-slate-500">Short Explanation</p>
+            <p className="mt-2 text-base leading-7 text-slate-700">{state.currentMission.shortExplanation}</p>
+          </div>
+
+          <div>
+            <p className="text-sm font-bold uppercase text-slate-500">Mini-question</p>
+            <p className="mt-2 text-2xl font-black text-slate-950">{state.currentMission.question}</p>
+          </div>
+
+          <div className="rounded-lg border border-sky-100 bg-sky-50 p-4 text-sm leading-6 text-sky-900">
+            <span className="font-bold">Hint:</span> {state.currentMission.hint}
+          </div>
+
+          <form className="grid gap-4" onSubmit={handleSubmit}>
+            <label className="grid gap-2">
+              <span className="text-sm font-bold text-slate-700">Answer</span>
+              <textarea
+                className="min-h-36 rounded-md border border-slate-300 px-4 py-3 text-base leading-7 text-slate-950 outline-none transition focus:border-slate-700 focus:ring-2 focus:ring-slate-200"
+                onChange={(event) => setAnswer(event.target.value)}
+                value={answer}
+              />
+            </label>
+
+            <button
+              className="rounded-md bg-slate-950 px-5 py-3 text-base font-bold text-white shadow-soft transition hover:bg-slate-700 disabled:cursor-wait disabled:bg-slate-400"
+              disabled={isChecking || !answer.trim()}
+              type="submit"
+            >
+              {isChecking ? "Checking Answer..." : "Submit Answer"}
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+  );
+}
