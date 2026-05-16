@@ -21,6 +21,7 @@ export interface GameState {
   streak: number;
   progress: number;
   badges: string[];
+  lastStudyDate?: string;
 }
 
 export interface TopicBoss {

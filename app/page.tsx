@@ -7,6 +7,7 @@ import { FeedbackScreen } from "@/components/FeedbackScreen";
 import { HomeScreen } from "@/components/HomeScreen";
 import { MissionScreen } from "@/components/MissionScreen";
 import { MySprintsPanel } from "@/components/MySprintsPanel";
+import { LeaderboardPanel } from "@/components/LeaderboardPanel";
 import { applyFeedbackToState, calculateDaysLeft, normalizeLevel } from "@/lib/gameLogic";
 import {
   clearStoredState,
@@ -101,6 +102,7 @@ export default function Page() {
   const [isChecking, setIsChecking] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [sprintsOpen, setSprintsOpen] = useState(false);
+  const [leaderboardOpen, setLeaderboardOpen] = useState(false);
 
   function handleLoadDemo() {
     clearStoredState();
@@ -272,12 +274,17 @@ export default function Page() {
     setState(loadedState);
     saveStoredState(loadedState);
     setSprintsOpen(false);
+    setLeaderboardOpen(false);
     setErrorMessage(null);
     setScreen("dashboard");
   }
 
   function handleOpenSprints() {
     setSprintsOpen(true);
+  }
+
+  function handleOpenLeaderboard() {
+    setLeaderboardOpen(true);
   }
 
   if (screen === "setup") {
@@ -301,10 +308,17 @@ export default function Page() {
           onReset={handleReset}
           onStartMission={handleStartMission}
           onOpenSprints={handleOpenSprints}
+          onOpenLeaderboard={handleOpenLeaderboard}
         />
         {sprintsOpen && (
           <MySprintsPanel
             onClose={() => setSprintsOpen(false)}
+            onLoad={handleLoadFromSprints}
+          />
+        )}
+        {leaderboardOpen && (
+          <LeaderboardPanel
+            onClose={() => setLeaderboardOpen(false)}
             onLoad={handleLoadFromSprints}
           />
         )}
@@ -343,10 +357,17 @@ export default function Page() {
         onLoadDemo={handleLoadDemo}
         onStart={() => setScreen("setup")}
         onOpenSprints={handleOpenSprints}
+        onOpenLeaderboard={handleOpenLeaderboard}
       />
       {sprintsOpen && (
         <MySprintsPanel
           onClose={() => setSprintsOpen(false)}
+          onLoad={handleLoadFromSprints}
+        />
+      )}
+      {leaderboardOpen && (
+        <LeaderboardPanel
+          onClose={() => setLeaderboardOpen(false)}
           onLoad={handleLoadFromSprints}
         />
       )}

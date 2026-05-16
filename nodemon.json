@@ -1,0 +1,8 @@
+{
+  "watch": ["app/api", "lib", "components", "app"],
+  "ext": "ts,tsx,js,json",
+  "ignore": ["node_modules", ".next", "public"],
+  "exec": "npm run dev",
+  "restartable": "rs",
+  "delay": "250"
+}

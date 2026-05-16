@@ -10,6 +10,11 @@ export function slugifyTopic(topic: string): string {
     .replace(/(^-|-$)+/g, "");
 }
 
+function getTodayString(): string {
+  const today = new Date();
+  return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+}
+
 export function normalizeLevel(level: string): StudentLevel {
   const value = level.toLowerCase();
 
@@ -132,13 +137,35 @@ export function applyFeedbackToState(state: ExamBossState, feedback: Feedback): 
     newlyUnlocked.push("High Scorer");
   }
 
+  const todayStr = getTodayString();
+  const lastStudyDate = state.game.lastStudyDate;
+  let newStreak = state.game.streak || 0;
+
+  if (lastStudyDate !== todayStr) {
+    if (!lastStudyDate) {
+      newStreak = 1;
+    } else {
+      const todayDate = new Date(todayStr);
+      const lastDate = new Date(lastStudyDate);
+      const diffTime = todayDate.getTime() - lastDate.getTime();
+      const diffDays = Math.round(diffTime / (1000 * 3600 * 24));
+
+      if (diffDays === 1) {
+        newStreak += 1;
+      } else if (diffDays > 1) {
+        newStreak = 1;
+      }
+    }
+  }
+
   return {
     ...state,
     game: {
       xp: state.game.xp + feedback.xpEarned,
-      streak: state.game.streak + 1,
+      streak: newStreak,
       progress: calculateProgress(topicBosses),
-      badges: Array.from(badgeSet)
+      badges: Array.from(badgeSet),
+      lastStudyDate: todayStr
     },
     topicBosses,
     completedMissions,

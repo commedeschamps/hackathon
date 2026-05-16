@@ -17,6 +17,7 @@ interface DashboardProps {
   onReset: () => void;
   onStartMission: (topicId: string) => void;
   onOpenSprints: () => void;
+  onOpenLeaderboard: () => void;
 }
 
 export function Dashboard({
@@ -25,7 +26,8 @@ export function Dashboard({
   onNewSprint,
   onReset,
   onStartMission,
-  onOpenSprints
+  onOpenSprints,
+  onOpenLeaderboard
 }: DashboardProps) {
   const currentBoss = state.topicBosses.find((boss) => boss.id === state.currentMission.topicId);
   const activeBoss = state.topicBosses.find((boss) => boss.status === "active");
@@ -39,7 +41,7 @@ export function Dashboard({
 
   return (
     <section className="mx-auto min-h-screen w-full max-w-6xl px-6 py-8">
-      <DemoBanner onLoadDemo={onLoadDemo} onNewSprint={onNewSprint} onReset={onReset} onOpenSprints={onOpenSprints} />
+      <DemoBanner onLoadDemo={onLoadDemo} onNewSprint={onNewSprint} onReset={onReset} onOpenSprints={onOpenSprints} onOpenLeaderboard={onOpenLeaderboard} />
 
       <header className="mt-8 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
         <div>

@@ -1,6 +1,6 @@
 const gameLoopSteps = [
   "Check answer",
-  "Gemini scores it",
+  "AI scores it",
   "XP increases",
   "Boss HP drops",
   "Progress updates",

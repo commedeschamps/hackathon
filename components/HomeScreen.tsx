@@ -7,9 +7,10 @@ interface HomeScreenProps {
   onStart: () => void;
   onLoadDemo: () => void;
   onOpenSprints: () => void;
+  onOpenLeaderboard: () => void;
 }
 
-export function HomeScreen({ onStart, onLoadDemo, onOpenSprints }: HomeScreenProps) {
+export function HomeScreen({ onStart, onLoadDemo, onOpenSprints, onOpenLeaderboard }: HomeScreenProps) {
   return (
     <main className="mx-auto w-full max-w-6xl px-6 py-10 lg:py-12">
       <section className="grid min-h-[92vh] items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
@@ -65,6 +66,13 @@ export function HomeScreen({ onStart, onLoadDemo, onOpenSprints }: HomeScreenPro
               type="button"
             >
               My Sprints
+            </button>
+            <button
+              className="rounded-xl border border-slate-300 bg-white px-6 py-3 text-base font-bold text-slate-800 transition hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50"
+              onClick={onOpenLeaderboard}
+              type="button"
+            >
+              Leaderboard
             </button>
           </div>
         </div>

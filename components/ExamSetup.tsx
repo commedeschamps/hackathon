@@ -115,7 +115,7 @@ export function ExamSetup({ errorMessage, isGenerating, onBack, onGenerate }: Ex
               isLoading={isGenerating}
               type="submit"
             >
-              {isGenerating ? "Gemini is building your boss plan..." : "Generate AI Sprint"}
+              {isGenerating ? "AI is building your boss plan..." : "Generate AI Sprint"}
             </SparkleButton>
 
             {errorMessage ? (
@@ -130,7 +130,7 @@ export function ExamSetup({ errorMessage, isGenerating, onBack, onGenerate }: Ex
           <p className="text-sm font-black uppercase tracking-[0.08em] text-cyan-200">Campaign logic</p>
           <h2 className="mt-3 text-2xl font-black">One sprint, one clear next move.</h2>
           <div className="mt-5 grid gap-3">
-            {["Topics become bosses", "Gemini creates the first attack", "Feedback turns into XP and HP damage"].map(
+            {["Topics become bosses", "AI creates the first attack", "Feedback turns into XP and HP damage"].map(
               (step, index) => (
                 <div className="rounded-lg border border-white/10 bg-white/10 p-3" key={step}>
                   <p className="text-xs font-black text-cyan-200">0{index + 1}</p>
