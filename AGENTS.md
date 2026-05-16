@@ -2,7 +2,7 @@
 
 ## Project Goal
 
-Exam Boss is a demo-ready hackathon MVP for students preparing for exams. It turns exam topics into bosses with HP, gives the student one short study mission, checks the answer with mock AI, awards XP, reduces boss HP, unlocks badges, and updates progress.
+Exam Boss is a demo-ready hackathon MVP for students preparing for exams. It turns exam topics into bosses with HP, uses Gemini to generate missions and feedback, awards XP, reduces boss HP, unlocks badges, and updates progress.
 
 This prototype is adapted for the official second-round task: demonstrate a working solution that combines gamification and AI prompt engineering. Protect the working demo flow and avoid extra product scope.
 
@@ -16,7 +16,7 @@ Main demo chain:
 2. App generates topic bosses.
 3. Student starts a mission.
 4. Student submits a short answer.
-5. Mock AI returns structured feedback.
+5. Gemini returns structured feedback through a server-side route.
 6. XP increases.
 7. Boss HP decreases.
 8. Overall progress updates.
@@ -30,9 +30,9 @@ Main demo chain:
 - Tailwind CSS
 - React client state
 - localStorage persistence
-- Mock AI first
+- Gemini API through server-side Next.js routes
 
-If real AI is added later, use server-side API routes only. Never expose API keys in frontend code.
+Use `GEMINI_API_KEY` in `.env.local`. Never expose API keys in frontend code.
 
 ## Strict Scope
 
@@ -45,7 +45,7 @@ Build only:
 - Mission screen
 - Feedback screen
 - Updated dashboard state
-- Mock AI responses
+- Gemini AI responses with strict JSON parsing
 - Prompt templates for judges
 - localStorage persistence
 - Demo mode
@@ -124,24 +124,27 @@ The app uses `ExamBossState` from `lib/types.ts`:
     hint: "Think about distance from the mean and standard deviation."
   },
   completedMissions: [],
-  lastFeedback: null
+  lastFeedback: null,
+  nextRecommendation: null
 }
 ```
 
-## Mock AI
+## AI Integration
 
-Mock AI lives in `lib/mockAi.ts`.
+Gemini integration lives in:
 
-Exports:
+- `app/api/generate-plan/route.ts`
+- `app/api/check-answer/route.ts`
+- `app/api/adapt-next-mission/route.ts`
+- `lib/ai/gemini.ts`
+- `lib/ai/json.ts`
+- `lib/ai/validators.ts`
 
-- `mockSprintPlan`
-- `mockMission`
-- `mockFeedback`
-- `generateMockSprintPlan`
-- `generateMockMission`
-- `checkStudentAnswer`
+Use `GEMINI_API_KEY` in `.env.local`. Never expose API keys in client components.
 
-The default feedback is intentionally stable for demos:
+Mock AI remains in `lib/mockAi.ts` only as a development fallback module. It is not the main demo path.
+
+The expected feedback shape is:
 
 ```json
 {
@@ -196,7 +199,7 @@ Included templates:
 - Check Student Answer
 - Adapt Next Mission
 
-These are not connected to an API yet. They exist so the team can show prompt engineering to judges and later wire them through server-side routes.
+These prompts are used by the server-side Gemini routes and are also shown to judges through prompt architecture metadata.
 
 The app also exports prompt architecture metadata from `lib/prompts.ts` so the Home screen can show:
 
@@ -238,6 +241,7 @@ The app saves:
 - badges
 - currentMission
 - lastFeedback
+- nextRecommendation
 
 Storage key:
 
@@ -249,14 +253,16 @@ exam-boss-state-v1
 
 1. Open the app.
 2. Click `Load Demo`.
-3. Show the dashboard with Probability and Statistics.
-4. Point out days left, XP, streak, progress, and topic bosses.
-5. Click `Start Mission` on Normal Distribution.
-6. Submit the prefilled z-score answer.
-7. Show feedback score `85`.
-8. Point out XP earned `85` and boss damage `35`.
-9. Click `Continue`.
-10. Show updated dashboard: XP increased, HP decreased, progress updated, First Strike badge visible.
+3. Confirm the Probability and Statistics setup fields are prefilled.
+4. Click `Generate Sprint` and wait for Gemini.
+5. Show the dashboard with AI-generated bosses and mission.
+6. Point out days left, XP, streak, progress, and topic bosses.
+7. Click `Start Mission` on the active boss.
+8. Submit a custom answer.
+9. Show Gemini feedback and next-step recommendation.
+10. Point out XP earned, boss damage, and badge unlock.
+11. Click `Continue`.
+12. Show updated dashboard: XP increased, HP decreased, progress updated, First Strike badge visible.
 
 ## Testing Checklist
 
@@ -287,7 +293,7 @@ If requirements change again, adapt only what the task requires:
 - rename product angle if needed
 - adjust prompt templates
 - change mission generation rules
-- add one server-side API route if real AI is required
+- adjust server-side Gemini routes if real AI requirements change
 - update demo data to match the official topic
 
 Do not add forbidden features unless they are explicitly required by the official task.

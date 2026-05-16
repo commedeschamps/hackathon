@@ -6,35 +6,82 @@ import { ExamSetup } from "@/components/ExamSetup";
 import { FeedbackScreen } from "@/components/FeedbackScreen";
 import { HomeScreen } from "@/components/HomeScreen";
 import { MissionScreen } from "@/components/MissionScreen";
-import { createDemoState } from "@/lib/demoData";
-import { applyFeedbackToState } from "@/lib/gameLogic";
-import { checkStudentAnswer, generateMockMission, generateMockSprintPlan } from "@/lib/mockAi";
+import { applyFeedbackToState, calculateDaysLeft, normalizeLevel } from "@/lib/gameLogic";
 import { clearStoredState, saveStoredState } from "@/lib/storage";
-import type { ExamBossState, SetupFormData } from "@/lib/types";
+import type {
+  ExamBossState,
+  Feedback,
+  GeneratedPlan,
+  NextMissionRecommendation,
+  SetupFormData
+} from "@/lib/types";
 
 type Screen = "home" | "setup" | "dashboard" | "mission" | "feedback";
+
+const AI_ERROR_MESSAGE = "AI request failed. Check API key or internet connection.";
+
+async function postJson<TResponse>(url: string, body: unknown): Promise<TResponse> {
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  });
+
+  if (!response.ok) {
+    throw new Error(AI_ERROR_MESSAGE);
+  }
+
+  return (await response.json()) as TResponse;
+}
 
 export default function Page() {
   const [screen, setScreen] = useState<Screen>("home");
   const [state, setState] = useState<ExamBossState | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   function handleLoadDemo() {
-    const nextState = createDemoState();
-    setState(nextState);
-    saveStoredState(nextState);
-    setScreen("dashboard");
+    clearStoredState();
+    setState(null);
+    setErrorMessage(null);
+    setScreen("setup");
   }
 
   async function handleGenerateSprint(formData: SetupFormData) {
     setIsGenerating(true);
+    setErrorMessage(null);
 
     try {
-      const nextState = await generateMockSprintPlan(formData);
+      const plan = await postJson<GeneratedPlan>("/api/generate-plan", formData);
+      const nextState: ExamBossState = {
+        exam: {
+          subject: formData.subject.trim(),
+          examDate: formData.examDate,
+          level: normalizeLevel(formData.level),
+          timePerDay: Number(formData.timePerDay),
+          daysLeft: calculateDaysLeft(formData.examDate)
+        },
+        game: {
+          xp: 0,
+          streak: 0,
+          progress: 0,
+          badges: []
+        },
+        topicBosses: plan.topicBosses,
+        currentMission: plan.recommendedMission,
+        completedMissions: [],
+        lastFeedback: null,
+        nextRecommendation: null
+      };
+
       setState(nextState);
       saveStoredState(nextState);
       setScreen("dashboard");
+    } catch {
+      setErrorMessage(AI_ERROR_MESSAGE);
     } finally {
       setIsGenerating(false);
     }
@@ -51,10 +98,8 @@ export default function Page() {
       return;
     }
 
-    const mission = await generateMockMission(boss);
     const nextState = {
       ...state,
-      currentMission: mission,
       lastFeedback: null
     };
 
@@ -63,19 +108,41 @@ export default function Page() {
     setScreen("mission");
   }
 
-  async function handleSubmitAnswer() {
+  async function handleSubmitAnswer(answer: string) {
     if (!state) {
       return;
     }
 
     setIsChecking(true);
+    setErrorMessage(null);
 
     try {
-      const feedback = await checkStudentAnswer();
-      const nextState = applyFeedbackToState(state, feedback);
+      const feedback = await postJson<Feedback>("/api/check-answer", {
+        state,
+        answer
+      });
+      const feedbackState = applyFeedbackToState(state, feedback);
+      let nextRecommendation: NextMissionRecommendation | null = null;
+
+      try {
+        nextRecommendation = await postJson<NextMissionRecommendation>(
+          "/api/adapt-next-mission",
+          feedbackState
+        );
+      } catch {
+        setErrorMessage(AI_ERROR_MESSAGE);
+      }
+
+      const nextState = {
+        ...feedbackState,
+        nextRecommendation
+      };
+
       setState(nextState);
       saveStoredState(nextState);
       setScreen("feedback");
+    } catch {
+      setErrorMessage(AI_ERROR_MESSAGE);
     } finally {
       setIsChecking(false);
     }
@@ -90,6 +157,7 @@ export default function Page() {
   if (screen === "setup") {
     return (
       <ExamSetup
+        errorMessage={errorMessage}
         isGenerating={isGenerating}
         onBack={() => setScreen("home")}
         onGenerate={handleGenerateSprint}
@@ -112,6 +180,7 @@ export default function Page() {
   if (screen === "mission" && state) {
     return (
       <MissionScreen
+        errorMessage={errorMessage}
         isChecking={isChecking}
         state={state}
         onBack={() => setScreen("dashboard")}
@@ -121,7 +190,16 @@ export default function Page() {
   }
 
   if (screen === "feedback" && state) {
-    return <FeedbackScreen state={state} onContinue={() => setScreen("dashboard")} />;
+    return (
+      <FeedbackScreen
+        errorMessage={errorMessage}
+        state={state}
+        onContinue={() => {
+          setErrorMessage(null);
+          setScreen("dashboard");
+        }}
+      />
+    );
   }
 
   return <HomeScreen onLoadDemo={handleLoadDemo} onStart={() => setScreen("setup")} />;

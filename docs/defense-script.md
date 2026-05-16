@@ -14,11 +14,11 @@ The game mechanics are connected to learning progress. Completing a mission trig
 
 ## 1:10-1:35 - AI and Prompt Engineering
 
-The prototype uses mock AI for reliability, but it includes a real prompt architecture. We have three prompts: Generate Sprint Plan, Check Student Answer, and Adapt Next Mission. Each prompt includes role, context, user input, task, restrictions, and JSON output format. This lets us replace mock AI later with a server-side AI route without changing the user flow.
+The prototype uses Gemini API through server-side routes. AI generates the sprint plan, checks answers, and recommends the next step. We have three prompts: Generate Sprint Plan, Check Student Answer, and Adapt Next Mission. Each prompt includes role, context, user input, task, restrictions, and JSON output format.
 
 ## 1:35-1:50 - Demonstration
 
-In the demo we load Probability and Statistics. The dashboard shows Normal Distribution as the active boss. We start the z-score mission, submit an answer, and get mock AI feedback with score 85. The system awards 85 XP, deals 35 boss damage, updates progress, and unlocks First Strike.
+In the demo we load prefilled Probability and Statistics inputs, then Gemini generates the sprint. We start the mission, submit a custom answer, and get live AI feedback. The system converts the score into XP, boss damage, progress, and the First Strike badge.
 
 ## 1:50-2:00 - Value and Uniqueness
 

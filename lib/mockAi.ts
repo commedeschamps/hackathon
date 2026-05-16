@@ -71,7 +71,8 @@ export async function generateMockSprintPlan(formData: SetupFormData): Promise<E
     topicBosses,
     currentMission: createMissionForTopic(activeBoss),
     completedMissions: [],
-    lastFeedback: null
+    lastFeedback: null,
+    nextRecommendation: null
   };
 }
 

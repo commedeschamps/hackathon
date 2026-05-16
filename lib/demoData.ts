@@ -73,7 +73,8 @@ export const demoState: ExamBossState = {
   topicBosses: demoTopicBosses,
   currentMission: demoMission,
   completedMissions: [],
-  lastFeedback: null
+  lastFeedback: null,
+  nextRecommendation: null
 };
 
 export function createDemoState(): ExamBossState {
@@ -83,6 +84,7 @@ export function createDemoState(): ExamBossState {
     topicBosses: demoState.topicBosses.map((boss) => ({ ...boss })),
     currentMission: { ...demoState.currentMission },
     completedMissions: [...demoState.completedMissions],
-    lastFeedback: demoState.lastFeedback ? { ...demoState.lastFeedback } : null
+    lastFeedback: demoState.lastFeedback ? { ...demoState.lastFeedback } : null,
+    nextRecommendation: demoState.nextRecommendation ? { ...demoState.nextRecommendation } : null
   };
 }

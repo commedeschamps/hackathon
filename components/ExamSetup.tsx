@@ -5,12 +5,13 @@ import { demoSetupForm } from "@/lib/demoData";
 import type { SetupFormData, StudentLevel } from "@/lib/types";
 
 interface ExamSetupProps {
+  errorMessage: string | null;
   isGenerating: boolean;
   onBack: () => void;
   onGenerate: (formData: SetupFormData) => void;
 }
 
-export function ExamSetup({ isGenerating, onBack, onGenerate }: ExamSetupProps) {
+export function ExamSetup({ errorMessage, isGenerating, onBack, onGenerate }: ExamSetupProps) {
   const [subject, setSubject] = useState(demoSetupForm.subject);
   const [examDate, setExamDate] = useState(demoSetupForm.examDate);
   const [topics, setTopics] = useState(demoSetupForm.topics);
@@ -41,7 +42,9 @@ export function ExamSetup({ isGenerating, onBack, onGenerate }: ExamSetupProps) 
       <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-soft md:p-8">
         <div className="mb-8">
           <h1 className="text-3xl font-black text-slate-950">Exam Setup</h1>
-          <p className="mt-2 text-base text-slate-600">Create a focused sprint from the exam details.</p>
+          <p className="mt-2 text-base text-slate-600">
+            Create a focused sprint from the exam details using a server-side Gemini prompt.
+          </p>
         </div>
 
         <form className="grid gap-5" onSubmit={handleSubmit}>
@@ -107,8 +110,14 @@ export function ExamSetup({ isGenerating, onBack, onGenerate }: ExamSetupProps) 
             disabled={isGenerating}
             type="submit"
           >
-            {isGenerating ? "Generating Sprint..." : "Generate Sprint"}
+            {isGenerating ? "AI is creating your sprint..." : "Generate Sprint"}
           </button>
+
+          {errorMessage ? (
+            <p className="rounded-md border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-800">
+              {errorMessage}
+            </p>
+          ) : null}
         </form>
       </div>
     </section>

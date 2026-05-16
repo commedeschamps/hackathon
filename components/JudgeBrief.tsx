@@ -2,7 +2,7 @@ import { promptArchitecture } from "@/lib/prompts";
 
 const gameLoopSteps = [
   "Mission completed",
-  "Mock AI feedback",
+  "Gemini feedback",
   "XP awarded",
   "Boss HP reduced",
   "Progress updated",
@@ -37,7 +37,7 @@ export function JudgeBrief() {
           <p className="text-sm font-bold uppercase text-slate-500">How It Works</p>
           <h2 className="mt-2 text-2xl font-black text-slate-950">Exam topics become bosses.</h2>
           <p className="mt-3 text-sm leading-6 text-slate-700">
-            The student enters exam data, receives a mission, answers a mini-question, gets mock AI
+            The student enters exam data, receives a mission, answers a mini-question, gets AI
             feedback, and sees XP, HP, progress, and badges update immediately.
           </p>
         </article>
@@ -71,8 +71,8 @@ export function JudgeBrief() {
             <h2 className="mt-2 text-2xl font-black text-slate-950">Three prompts drive the prototype logic.</h2>
           </div>
           <p className="max-w-xl text-sm leading-6 text-slate-600">
-            The demo uses mock AI, but the prompts define exactly what a real server-side AI route
-            would generate later.
+            The prototype uses structured prompts and server-side AI routes. Gemini returns JSON
+            that drives missions, feedback, XP, boss damage, and next-step recommendations.
           </p>
         </div>
 

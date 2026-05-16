@@ -4,7 +4,9 @@ export type BossDifficulty = "easy" | "medium" | "hard";
 
 export type BossStatus = "active" | "locked" | "defeated";
 
-export type FeedbackResult = "correct" | "partly_correct" | "needs_work";
+export type FeedbackResult = "correct" | "partly_correct" | "incorrect";
+
+export type MissionType = "review" | "practice" | "boss_fight";
 
 export interface Exam {
   subject: string;
@@ -39,6 +41,11 @@ export interface Mission {
   hint: string;
 }
 
+export interface GeneratedPlan {
+  topicBosses: TopicBoss[];
+  recommendedMission: Mission;
+}
+
 export interface Feedback {
   score: number;
   result: FeedbackResult;
@@ -51,6 +58,14 @@ export interface Feedback {
   badgeUnlocked?: string | null;
 }
 
+export interface NextMissionRecommendation {
+  nextTopic: string;
+  nextDifficulty: BossDifficulty;
+  missionType: MissionType;
+  reason: string;
+  unlockMessage: string;
+}
+
 export interface ExamBossState {
   exam: Exam;
   game: GameState;
@@ -58,6 +73,7 @@ export interface ExamBossState {
   currentMission: Mission;
   completedMissions: string[];
   lastFeedback: Feedback | null;
+  nextRecommendation: NextMissionRecommendation | null;
 }
 
 export interface SetupFormData {

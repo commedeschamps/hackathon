@@ -1,8 +1,8 @@
 # Exam Boss
 
-Exam Boss is a hackathon prototype that helps students prepare for exams by turning large exam topics into boss fights. A student enters exam data, receives a short AI-style mission, submits an answer, receives feedback, earns XP, damages a topic boss, sees progress increase, and unlocks a badge.
+Exam Boss is a hackathon prototype that helps students prepare for exams by turning large exam topics into boss fights. A student enters exam data, Gemini generates a short mission, the student submits an answer, Gemini returns feedback, and the app converts that structured response into XP, boss damage, progress, and badges.
 
-The prototype is built to demonstrate gamification plus prompt engineering in practice. It uses mock AI by default, so the demo works without internet access, API keys, login, database, or any external service.
+The prototype is built to demonstrate gamification plus prompt engineering in practice. It uses the Gemini API through server-side Next.js routes, so API keys are never exposed in client components.
 
 ## Team Members
 
@@ -41,7 +41,7 @@ Exam Boss converts exam preparation into a short game loop:
 2. The system creates topic bosses with HP.
 3. The system creates a recommended mission.
 4. The student answers a mini-question.
-5. Mock AI checks the answer and gives structured feedback.
+5. Gemini checks the answer and gives structured feedback.
 6. The system awards XP and reduces boss HP.
 7. Overall progress updates.
 8. A badge unlocks.
@@ -63,13 +63,13 @@ Default demo:
 - Level: Beginner
 - Time per day: 20 minutes
 
-Mission:
+The classic demo mission often focuses on:
 
 - Title: Understand z-score basics
 - Question: What does a z-score show?
 - Hint: Think about distance from the mean and standard deviation.
 
-Mock feedback score is `85`, which awards `85 XP`, deals `35 boss damage`, updates progress, and unlocks `First Strike`.
+The feedback score comes from Gemini. The app then applies deterministic game rules: XP equals score, boss damage depends on score, progress updates from HP reduction, and `First Strike` unlocks after the first completed mission.
 
 ## Game Mechanics
 
@@ -98,7 +98,13 @@ Why this helps:
 
 ## AI and Prompt Engineering
 
-The MVP uses mock AI, but the prompt architecture is implemented in `lib/prompts.ts` and shown in the app. A real AI model can be connected later through a server-side API route without exposing keys in frontend code.
+The MVP uses Gemini through server-side routes. Prompt architecture is implemented in `lib/prompts.ts` and shown in the app. Gemini returns JSON that drives missions, feedback, XP, boss damage, and next-step recommendations.
+
+AI routes:
+
+- `POST /api/generate-plan`
+- `POST /api/check-answer`
+- `POST /api/adapt-next-mission`
 
 ### Prompt 1: Generate Sprint Plan
 
@@ -190,6 +196,14 @@ docs/
 
 ## How To Launch
 
+Create `.env.local` in the project root:
+
+```bash
+GEMINI_API_KEY=your_key_here
+```
+
+`.env.local` is ignored by git through `.gitignore`.
+
 Install dependencies:
 
 ```bash
@@ -220,18 +234,25 @@ Lint check:
 npm run lint
 ```
 
+If `GEMINI_API_KEY` is missing or invalid, AI requests return:
+
+```txt
+AI request failed. Check API key or internet connection.
+```
+
 ## How To Demo
 
 1. Open the app.
 2. Show the Home screen problem, target user, game loop, and prompt architecture.
-3. Click `Load Demo`.
-4. Show topic bosses, XP, streak, progress, badges, and connected game-loop panel.
-5. Click `Start Mission`.
-6. Submit the prefilled z-score answer.
-7. Show mock AI feedback.
-8. Point out score `85`, XP `85`, boss damage `35`, and `First Strike`.
-9. Click `Continue`.
-10. Show the updated dashboard: XP increased, boss HP reduced to `65`, progress increased, badge visible.
+3. Click `Load Demo` to open prefilled demo inputs.
+4. Click `Generate Sprint` and wait for Gemini to create bosses and a mission.
+5. Show topic bosses, XP, streak, progress, badges, and connected game-loop panel.
+6. Click `Start Mission`.
+7. Submit a custom answer.
+8. Show Gemini feedback and structured JSON next-step recommendation.
+9. Point out XP, boss damage, progress, and `First Strike`.
+10. Click `Continue`.
+11. Show the updated dashboard.
 
 ## 2-Minute Defense Structure
 
@@ -250,7 +271,7 @@ Timing:
 
 - Home screen loads.
 - Start Sprint opens Exam Setup.
-- Load Demo opens Dashboard.
+- Load Demo opens prefilled Exam Setup.
 - Exam Setup accepts data.
 - Generate Sprint creates bosses.
 - Dashboard shows HP bars and game-loop panel.
@@ -263,10 +284,13 @@ Timing:
 - First Strike badge unlocks.
 - Continue returns to updated Dashboard.
 - Prompt architecture is visible on Home screen.
-- No real API key or internet is needed.
+- `GEMINI_API_KEY` is present in `.env.local`.
+- Generate Sprint calls Gemini and creates non-scripted bosses.
+- Submit Answer calls Gemini and feedback changes based on the answer.
+- Missing or invalid API key shows the clear AI error message.
+- API key is not visible in frontend code or browser output.
 
 ## Current Constraints
 
-- Mock AI is used by default.
 - No login, database, authentication, leaderboard, upload, calendar integration, payment logic, or admin panel.
-- Real AI integration, if required later, must be optional and server-side only.
+- Mock AI remains only as a development fallback module and is not the main flow.

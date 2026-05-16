@@ -1,6 +1,6 @@
 const gameLoopSteps = [
   "Submit answer",
-  "Mock AI scores it",
+  "Gemini scores it",
   "XP increases",
   "Boss takes damage",
   "Progress updates",
@@ -16,7 +16,7 @@ export function GameLoopPanel() {
           <h2 className="mt-1 text-xl font-black text-slate-950">Connected gamification chain</h2>
         </div>
         <p className="text-sm leading-6 text-slate-600">
-          This is the judge-facing cause-and-effect loop.
+          Gemini returns JSON; local game logic turns it into progress.
         </p>
       </div>
       <div className="mt-4 grid gap-2 md:grid-cols-6">

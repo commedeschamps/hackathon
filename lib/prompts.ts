@@ -23,9 +23,8 @@ Restrictions:
 
 JSON output format:
 {
-  "exam": { "subject": "string", "examDate": "YYYY-MM-DD", "level": "beginner", "timePerDay": 20, "daysLeft": 5 },
   "topicBosses": [{ "id": "string", "name": "string", "hp": 100, "maxHp": 100, "difficulty": "medium", "status": "active" }],
-  "currentMission": { "id": "string", "topicId": "string", "title": "string", "shortExplanation": "string", "question": "string", "hint": "string" }
+  "recommendedMission": { "id": "string", "topicId": "string", "title": "string", "shortExplanation": "string", "question": "string", "hint": "string" }
 }
 `;
 
@@ -51,6 +50,8 @@ Restrictions:
 - Be encouraging but precise.
 - Do not invent unrelated content.
 - Keep feedback concise.
+- xpEarned must equal score.
+- bossDamage must follow the scoring rules provided by the application.
 - Return JSON only.
 
 JSON output format:
@@ -92,12 +93,11 @@ Restrictions:
 
 JSON output format:
 {
-  "id": "string",
-  "topicId": "string",
-  "title": "string",
-  "shortExplanation": "string",
-  "question": "string",
-  "hint": "string"
+  "nextTopic": "string",
+  "nextDifficulty": "easy",
+  "missionType": "practice",
+  "reason": "string",
+  "unlockMessage": "string"
 }
 `;
 
