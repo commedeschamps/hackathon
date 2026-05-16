@@ -1,7 +1,7 @@
 import { promptArchitecture } from "@/lib/prompts";
 
 const gameLoopSteps = [
-  "Mission completed",
+  "Attack completed",
   "Gemini feedback",
   "XP awarded",
   "Boss HP reduced",
