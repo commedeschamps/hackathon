@@ -106,3 +106,52 @@ export const promptTemplates = {
   checkStudentAnswerPrompt,
   adaptNextMissionPrompt
 };
+
+export const promptArchitecture = [
+  {
+    name: "Generate Sprint Plan",
+    whereUsed: "After Exam Setup, when the student clicks Generate Sprint.",
+    insertedUserData: [
+      "subject",
+      "exam date",
+      "topic list",
+      "student level",
+      "available study time per day"
+    ],
+    expectedResult: "Topic bosses with HP plus the first recommended mission.",
+    howItHelps:
+      "Turns a large exam into a short, personalized plan the student can start immediately.",
+    template: generateSprintPlanPrompt
+  },
+  {
+    name: "Check Student Answer",
+    whereUsed: "After the student submits the mission answer.",
+    insertedUserData: [
+      "subject",
+      "topic",
+      "mission title",
+      "question",
+      "student answer",
+      "student level"
+    ],
+    expectedResult: "Score, feedback, XP earned, boss damage, next action, and badge status.",
+    howItHelps:
+      "Gives fast learning feedback and converts answer quality into connected game progress.",
+    template: checkStudentAnswerPrompt
+  },
+  {
+    name: "Adapt Next Mission",
+    whereUsed: "After feedback, when the system chooses the next study step.",
+    insertedUserData: [
+      "exam state",
+      "boss HP",
+      "completed missions",
+      "last feedback",
+      "available study time"
+    ],
+    expectedResult: "One short next mission matched to current progress and difficulty.",
+    howItHelps:
+      "Keeps the student moving with a small next action instead of a generic study list.",
+    template: adaptNextMissionPrompt
+  }
+];

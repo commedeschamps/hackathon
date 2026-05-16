@@ -4,7 +4,7 @@
 
 Exam Boss is a demo-ready hackathon MVP for students preparing for exams. It turns exam topics into bosses with HP, gives the student one short study mission, checks the answer with mock AI, awards XP, reduces boss HP, unlocks badges, and updates progress.
 
-This is a flexible prototype base. The official hackathon task is not fully released yet, so protect the demo flow and avoid extra product scope.
+This prototype is adapted for the official second-round task: demonstrate a working solution that combines gamification and AI prompt engineering. Protect the working demo flow and avoid extra product scope.
 
 ## Core MVP Flow
 
@@ -49,6 +49,8 @@ Build only:
 - Prompt templates for judges
 - localStorage persistence
 - Demo mode
+- Judge-facing problem, audience, game-loop, and prompt-architecture explanations
+- README and 2-minute defense notes
 
 ## Forbidden Features
 
@@ -196,6 +198,33 @@ Included templates:
 
 These are not connected to an API yet. They exist so the team can show prompt engineering to judges and later wire them through server-side routes.
 
+The app also exports prompt architecture metadata from `lib/prompts.ts` so the Home screen can show:
+
+- where each prompt is used
+- what user data is inserted
+- what AI result is expected
+- how the result helps the student
+
+Official prompts:
+
+- Generate Sprint Plan
+- Check Student Answer
+- Adapt Next Mission
+
+## Official Task Alignment
+
+The prototype must clearly show:
+
+- a concrete problem and target audience
+- a working user scenario
+- connected game mechanics
+- structured AI prompts
+- where prompts affect the scenario
+- a realistic and testable implementation
+- a 2-minute defense path
+
+Do not turn this into a presentation-only project. The live demo path remains the main evidence.
+
 ## localStorage
 
 Persistence lives in `lib/storage.ts`.
@@ -253,7 +282,7 @@ Verify before demo:
 
 ## After Official Task Release
 
-Adapt only what the task requires:
+If requirements change again, adapt only what the task requires:
 
 - rename product angle if needed
 - adjust prompt templates

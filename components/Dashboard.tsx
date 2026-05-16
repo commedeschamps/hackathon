@@ -1,6 +1,7 @@
 import { BadgeCard } from "./BadgeCard";
 import { BossCard } from "./BossCard";
 import { DemoBanner } from "./DemoBanner";
+import { GameLoopPanel } from "./GameLoopPanel";
 import { ProgressBar } from "./ProgressBar";
 import type { ExamBossState } from "@/lib/types";
 
@@ -49,6 +50,10 @@ export function Dashboard({
 
       <div className="mt-8 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
         <ProgressBar label="Overall Progress" tone="progress" value={state.game.progress} />
+      </div>
+
+      <div className="mt-6">
+        <GameLoopPanel />
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_360px]">
