@@ -347,14 +347,64 @@ textarea:focus-visible {
   }
 }
 
+@keyframes aura-pulse {
+  0%, 100% { scale: 1; opacity: 0.8; }
+  50% { scale: 1.05; opacity: 1; }
+}
+
+@keyframes arena-rotate {
+  from { rotate: 0deg; }
+  to { rotate: 360deg; }
+}
+
+@keyframes crest-shimmer {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.25) drop-shadow(0 0 6px currentColor); }
+}
+
+@keyframes hp-glow {
+  0%, 100% { box-shadow: 0 0 0 rgba(244, 63, 94, 0); }
+  50% { box-shadow: 0 0 20px rgba(244, 63, 94, 0.6); }
+}
+
+@keyframes path-energy {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; filter: drop-shadow(0 0 6px rgba(34, 211, 238, 0.8)); }
+}
+
+.anim-aura {
+  animation: aura-pulse 4s ease-in-out infinite;
+}
+
+.anim-ring {
+  animation: arena-rotate 40s linear infinite;
+}
+
+.anim-shimmer {
+  animation: crest-shimmer 3.5s ease-in-out infinite;
+}
+
+.anim-hp-glow {
+  animation: hp-glow 2.5s ease-in-out infinite;
+}
+
+.anim-path {
+  animation: path-energy 2s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .sparkle-button,
   .sparkle-button::before,
   .sparkle-button__spin,
   .sparkle-button__icon path,
   .sparkle-button__particle,
-  .sparkle-button__loading {
-    animation: none;
-    transition: none;
+  .sparkle-button__loading,
+  .anim-aura,
+  .anim-ring,
+  .anim-shimmer,
+  .anim-hp-glow,
+  .anim-path {
+    animation: none !important;
+    transition: none !important;
   }
 }

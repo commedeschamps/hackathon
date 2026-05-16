@@ -16,6 +16,7 @@ interface DashboardProps {
   onNewSprint: () => void;
   onReset: () => void;
   onStartMission: (topicId: string) => void;
+  onOpenSprints: () => void;
 }
 
 export function Dashboard({
@@ -23,7 +24,8 @@ export function Dashboard({
   onLoadDemo,
   onNewSprint,
   onReset,
-  onStartMission
+  onStartMission,
+  onOpenSprints
 }: DashboardProps) {
   const currentBoss = state.topicBosses.find((boss) => boss.id === state.currentMission.topicId);
   const activeBoss = state.topicBosses.find((boss) => boss.status === "active");
@@ -37,11 +39,13 @@ export function Dashboard({
 
   return (
     <section className="mx-auto min-h-screen w-full max-w-6xl px-6 py-8">
-      <DemoBanner onLoadDemo={onLoadDemo} onNewSprint={onNewSprint} onReset={onReset} />
+      <DemoBanner onLoadDemo={onLoadDemo} onNewSprint={onNewSprint} onReset={onReset} onOpenSprints={onOpenSprints} />
 
       <header className="mt-8 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-sm font-bold uppercase text-slate-500">{state.exam.subject}</p>
+          <p className="text-sm font-bold uppercase tracking-[0.16em] text-slate-500">
+            {state.exam.subject}
+          </p>
           <h1 className="mt-2 text-4xl font-black text-slate-950">Exam Arena</h1>
         </div>
         <div className="grid grid-cols-3 gap-3">
@@ -56,45 +60,107 @@ export function Dashboard({
       </div>
 
       {spotlightBoss ? (
-        <section className="mt-6 overflow-hidden rounded-xl border border-indigo-100 bg-slate-950 text-white shadow-soft">
-          <div className="grid gap-6 bg-[radial-gradient(circle_at_top_right,rgba(34,211,238,0.24),transparent_38%),radial-gradient(circle_at_bottom_left,rgba(244,63,94,0.16),transparent_36%)] p-6 lg:grid-cols-[auto_1fr_300px] lg:items-center">
-            <BossAvatar
-              difficulty={spotlightBoss.difficulty}
-              size="lg"
-              status={spotlightVisualState ?? spotlightBoss.status}
-            />
-            <div>
-              <AITrustLabel tone="evaluation">Active boss spotlight</AITrustLabel>
-              <h2 className="mt-3 text-3xl font-black leading-tight">{spotlightBoss.name}</h2>
-              <div className="mt-3">
-                <DifficultyBadge difficulty={spotlightBoss.difficulty} />
+        <section className="mt-6 overflow-hidden rounded-[1.6rem] border border-slate-900/10 bg-slate-950 text-white shadow-[0_28px_80px_rgba(15,23,42,0.24)]">
+          <div className="relative">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(34,211,238,0.24),transparent_28%),radial-gradient(circle_at_80%_20%,rgba(129,140,248,0.18),transparent_26%),radial-gradient(circle_at_50%_100%,rgba(244,63,94,0.14),transparent_30%)]" />
+            <div className="absolute inset-0 opacity-40 [background-image:linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] [background-size:48px_48px]" />
+
+            <div className="relative grid gap-6 p-6 lg:grid-cols-[minmax(0,1.25fr)_minmax(320px,0.75fr)] lg:items-center lg:p-8">
+              <div className="relative overflow-hidden rounded-[1.6rem] border border-white/10 bg-white/5 p-5">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_42%,rgba(34,211,238,0.18),transparent_26%),radial-gradient(circle_at_50%_42%,rgba(129,140,248,0.16),transparent_42%)]" />
+                <div className="absolute inset-x-1/2 top-1/2 h-[24rem] w-[24rem] -translate-x-1/2 -translate-y-1/2">
+                  <div className="h-full w-full rounded-full border border-cyan-300/20 [box-shadow:0_0_0_28px_rgba(34,211,238,0.05),0_0_0_68px_rgba(129,140,248,0.03)] anim-ring origin-center" />
+                </div>
+                <div className="absolute inset-x-1/2 top-1/2 h-[16rem] w-[16rem] -translate-x-1/2 -translate-y-1/2">
+                  <div className="h-full w-full rounded-full border border-white/10 anim-ring origin-center" style={{ animationDirection: "reverse", animationDuration: "50s" }} />
+                </div>
+
+                <div className="relative grid gap-6 lg:grid-cols-[auto_1fr] lg:items-center">
+                  <div className="relative mx-auto w-fit">
+                    <div className="absolute inset-[-1rem] rounded-full bg-cyan-400/15 blur-3xl" />
+                    <BossAvatar
+                      difficulty={spotlightBoss.difficulty}
+                      size="lg"
+                      status={spotlightVisualState ?? spotlightBoss.status}
+                    />
+                  </div>
+
+                  <div className="space-y-4">
+                    <AITrustLabel tone="evaluation">Active boss encounter</AITrustLabel>
+                    <div>
+                      <p className="text-xs font-black uppercase tracking-[0.14em] text-cyan-100/70">
+                        Exam arena core
+                      </p>
+                      <h2 className="mt-2 text-4xl font-black leading-tight text-white">
+                        {spotlightBoss.name}
+                      </h2>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-3">
+                      <DifficultyBadge difficulty={spotlightBoss.difficulty} />
+                      <p className="text-sm font-medium text-slate-200">
+                        The boss sits at the center of the arena and weakens with every solved attack.
+                      </p>
+                    </div>
+
+                    <div className="grid gap-3 sm:grid-cols-3">
+                      <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                        <p className="text-[11px] font-black uppercase tracking-[0.14em] text-cyan-100/60">
+                          AI coach
+                        </p>
+                        <p className="mt-2 text-sm font-semibold text-slate-100">
+                          Guided study strikes
+                        </p>
+                      </div>
+                      <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                        <p className="text-[11px] font-black uppercase tracking-[0.14em] text-cyan-100/60">
+                          HP core
+                        </p>
+                        <p className="mt-2 text-sm font-semibold text-slate-100">
+                          Boss vitality at {spotlightHpPercent}%
+                        </p>
+                      </div>
+                      <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                        <p className="text-[11px] font-black uppercase tracking-[0.14em] text-cyan-100/60">
+                          Mission path
+                        </p>
+                        <p className="mt-2 text-sm font-semibold text-slate-100">
+                          Next attack is ready to launch
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-200">
-                Complete the recommended attack, get Gemini feedback, and convert the score into
-                XP, HP damage, progress, and badges.
-              </p>
-            </div>
-            <div className="rounded-lg border border-white/10 bg-white/10 p-4">
-              <HPBar
-                current={spotlightBoss.hp}
-                label="Current HP"
-                max={spotlightBoss.maxHp}
-                size="lg"
-                tone="dark"
-              />
-              {completedCurrentMission ? (
-                <p className="mt-4 rounded-md bg-emerald-400/15 px-3 py-2 text-sm font-black text-emerald-100">
-                  Attack completed
-                </p>
-              ) : (
-                <button
-                  className="mt-4 w-full rounded-md bg-white px-4 py-3 text-sm font-black text-slate-950 transition hover:-translate-y-0.5 hover:bg-cyan-50"
-                  onClick={() => onStartMission(state.currentMission.topicId)}
-                  type="button"
-                >
-                  Start Attack
-                </button>
-              )}
+
+              <div className={`relative rounded-[1.6rem] border border-white/10 bg-white/5 p-4 transition-all duration-500 ${spotlightVisualState === 'weakened' ? 'anim-hp-glow border-rose-500/30' : ''}`}>
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_55%)] rounded-[1.6rem] overflow-hidden" />
+                <div className="relative">
+                  <HPBar
+                    current={spotlightBoss.hp}
+                    label="Current HP"
+                    max={spotlightBoss.maxHp}
+                    size="lg"
+                    tone="dark"
+                  />
+                  {completedCurrentMission ? (
+                    <p className="mt-4 rounded-2xl border border-emerald-400/20 bg-emerald-400/15 px-4 py-3 text-sm font-black text-emerald-100">
+                      Attack completed
+                    </p>
+                  ) : (
+                    <button
+                      className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 px-4 py-3 text-sm font-black text-white shadow-[0_16px_40px_rgba(34,211,238,0.24)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_46px_rgba(34,211,238,0.32)]"
+                      onClick={() => onStartMission(state.currentMission.topicId)}
+                      type="button"
+                    >
+                      <span>Start Attack</span>
+                      <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                        <path d="M5 10h9m0 0-4-4m4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </section>

@@ -64,6 +64,12 @@ export interface NextMissionRecommendation {
   missionType: MissionType;
   reason: string;
   unlockMessage: string;
+  id?: string;
+  topicId?: string;
+  title?: string;
+  shortExplanation?: string;
+  question?: string;
+  hint?: string;
 }
 
 export interface ExamBossState {

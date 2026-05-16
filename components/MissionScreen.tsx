@@ -102,7 +102,7 @@ export function MissionScreen({
               <textarea
                 className="min-h-36 rounded-md border border-slate-300 px-4 py-3 text-base leading-7 text-slate-950 outline-none transition focus:border-slate-700 focus:ring-2 focus:ring-slate-200"
                 onChange={(event) => setAnswer(event.target.value)}
-                placeholder="Write your own answer so Gemini can evaluate it."
+                placeholder="Write your answer"
                 value={answer}
               />
             </label>

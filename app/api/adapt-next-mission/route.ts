@@ -6,7 +6,24 @@ import type { ExamBossState } from "@/lib/types";
 
 export const runtime = "nodejs";
 
-function buildPrompt(state: ExamBossState) {
+interface AdaptNextMissionBody {
+  state: ExamBossState;
+  targetTopicId?: string;
+}
+
+function buildPrompt(state: ExamBossState, targetTopicId?: string) {
+  const targetBoss = targetTopicId
+    ? state.topicBosses.find((b) => b.id === targetTopicId)
+    : null;
+
+  const targetContext = targetBoss
+    ? {
+        targetTopicId: targetBoss.id,
+        targetTopicName: targetBoss.name,
+        targetDifficulty: targetBoss.difficulty
+      }
+    : null;
+
   return `${adaptNextMissionPrompt}
 
 User input data:
@@ -16,7 +33,8 @@ ${JSON.stringify(
     topicBosses: state.topicBosses,
     completedMissions: state.completedMissions,
     lastFeedback: state.lastFeedback,
-    availableStudyTimePerDay: state.exam.timePerDay
+    availableStudyTimePerDay: state.exam.timePerDay,
+    ...(targetContext ? { targetMission: targetContext } : {})
   },
   null,
   2
@@ -27,8 +45,10 @@ Return only valid JSON. Do not wrap the response in markdown.`;
 
 export async function POST(request: Request) {
   try {
-    const state = (await request.json()) as ExamBossState;
-    const responseText = await generateGeminiJson(buildPrompt(state));
+    const body = (await request.json()) as AdaptNextMissionBody;
+    const state = body.state ?? (body as unknown as ExamBossState);
+    const targetTopicId = body.targetTopicId;
+    const responseText = await generateGeminiJson(buildPrompt(state, targetTopicId));
     const recommendation = parseAiJson(responseText, validateNextMissionRecommendation);
 
     return Response.json(recommendation);

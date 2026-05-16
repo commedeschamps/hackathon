@@ -81,9 +81,14 @@ Input:
 - completed missions
 - last feedback
 - available study time per day
+- targetMission (optional): if present, generate the mission ONLY for this topic, difficulty, and topicId
 
 Task:
 Create one next mission that fits the student's current level and keeps the sprint moving.
+If targetMission is provided, you MUST generate the mission for that exact topic (targetTopicId) and difficulty.
+The returned topicId field MUST match targetMission.targetTopicId exactly when provided.
+Do not repeat any question from completedMissions.
+Do not reuse the question from lastFeedback if it exists.
 
 Restrictions:
 - Create only one mission.
@@ -97,7 +102,13 @@ JSON output format:
   "nextDifficulty": "easy",
   "missionType": "practice",
   "reason": "string",
-  "unlockMessage": "string"
+  "unlockMessage": "string",
+  "id": "string",
+  "topicId": "string",
+  "title": "string",
+  "shortExplanation": "string",
+  "question": "string",
+  "hint": "string"
 }
 `;
 

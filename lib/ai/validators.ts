@@ -119,6 +119,12 @@ export function validateNextMissionRecommendation(value: unknown): NextMissionRe
     nextDifficulty: requiredEnum(value.nextDifficulty, "nextDifficulty", difficulties),
     missionType: requiredEnum(value.missionType, "missionType", missionTypes),
     reason: requiredString(value.reason, "reason"),
-    unlockMessage: requiredString(value.unlockMessage, "unlockMessage")
+    unlockMessage: requiredString(value.unlockMessage, "unlockMessage"),
+    id: typeof value.id === "string" ? value.id : undefined,
+    topicId: typeof value.topicId === "string" ? value.topicId : undefined,
+    title: typeof value.title === "string" ? value.title : undefined,
+    shortExplanation: typeof value.shortExplanation === "string" ? value.shortExplanation : undefined,
+    question: typeof value.question === "string" ? value.question : undefined,
+    hint: typeof value.hint === "string" ? value.hint : undefined
   };
 }
